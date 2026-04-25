@@ -149,8 +149,10 @@ update_time = now.strftime("%Y%m%d %H:%M")
 
 # 写入文件
 with open(outfile, "w", encoding="utf-8") as f:
-    # 将更新时间直接作为分类标题，这样它就不会变成一个可播放的视频
-    f.write(f"⏰更新时间：{update_time},#genre#\n\n")
+    # 1. 置顶显示更新时间
+    # 必须在下面加一行占位信息（链接设为 127.0.0.1），分类才会显示在列表里
+    f.write(f"⏰更新时间：{update_time},#genre#\n")
+    f.write(f"最近更新于：{update_time},http://127.0.0.1\n\n")
     
     for g, items in groups.items():
         f.write(f"{g},#genre#\n")
