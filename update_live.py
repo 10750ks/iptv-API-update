@@ -149,16 +149,29 @@ update_time = now.strftime("%Y%m%d %H:%M")
 
 # 写入文件
 with open(outfile, "w", encoding="utf-8") as f:
-    # 1. 置顶显示更新时间
-    # 必须在下面加一行占位信息（链接设为 127.0.0.1），分类才会显示在列表里
+    # 1. 写入更新时间（带占位行，确保影视仓能显示）
     f.write(f"⏰更新时间：{update_time},#genre#\n")
-    f.write(f"最近更新于：{update_time},http://127.0.0.1\n\n")
+    f.write(f"接口更新于：{update_time},http://127.0.0.1\n\n")
     
-    for g, items in groups.items():
-        f.write(f"{g},#genre#\n")
-        for i in items:
-            f.write(f"{i['name']},{i['link']}\n")
-        f.write("\n")
+    # 2. 定义你想置顶的分类顺序
+    # 只要出现在这个列表里的分类，会按顺序排在最前面
+    category_order = ["央视频道", "卫视频道"]
+    
+    # 先按指定顺序写入
+    for g in category_order:
+        if g in groups and groups[g]:
+            f.write(f"{g},#genre#\n")
+            for i in groups[g]:
+                f.write(f"{i['name']},{i['link']}\n")
+            f.write("\n")
 
+    # 3. 写入剩下的其他省份频道（排除已经写过的和不需要的）
+    for g, items in groups.items():
+        # 排除已置顶的、没内容的，以及明确删掉“收藏频道”
+        if g not in category_order and g != "收藏频道" and items:
+            f.write(f"{g},#genre#\n")
+            for i in items:
+                f.write(f"{i['name']},{i['link']}\n")
+            f.write("\n")
 total = sum(len(v) for v in groups.values())
 print(f"✅ 已生成 {outfile}，共 {total} 条直播源（测速+排序完成，北京时间）")
