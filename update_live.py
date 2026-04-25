@@ -149,9 +149,8 @@ update_time = now.strftime("%Y%m%d %H:%M")
 
 # 写入文件
 with open(outfile, "w", encoding="utf-8") as f:
-    f.write("更新时间,#genre#\n")
-    f.write(f"{update_time},https://d.kstore.dev/download/8880/%E5%85%AC%E5%91%8A.mp4\n")
-    f.write("关于本源(塔利班维护),https://v.cdnlz12.com/20250131/18183_a5e8965b/index.m3u8\n\n")
+    # 将更新时间直接作为分类标题，这样它就不会变成一个可播放的视频
+    f.write(f"⏰更新时间：{update_time},#genre#\n\n")
     
     for g, items in groups.items():
         f.write(f"{g},#genre#\n")
